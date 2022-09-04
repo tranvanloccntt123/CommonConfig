@@ -59,7 +59,7 @@ const App = () => {
     <View style={[AppStyle.container]}>
       <SafeAreaView style={[AppStyle.container]}>
         <ScrollView style={[AppStyle.p3]}>
-          <Text style={[AppStyle.h4, AppStyle.mb3]}>TEST API version 0.0.3</Text>
+          <Text style={[AppStyle.h4, AppStyle.mb3]}>TEST API Module</Text>
           <View style={[AppStyle.mb3]}>
             <Text style={[AppStyle.pl3, AppStyle.mb1]}>Path *</Text>
             <TextInput

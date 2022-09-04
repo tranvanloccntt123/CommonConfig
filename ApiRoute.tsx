@@ -9,3 +9,8 @@ const BASE_CHAT = `${BASE}/chat`;
 export const CHAT_API_GET_LIST: string = `${BASE_CHAT}/list`;
 export const CHAT_API_GET_MESSAGES: string = `${BASE_CHAT}/messages`;
 export const CHAT_API_SEND_MESSAGE: string = `${BASE_CHAT}/send`;
+//api for profile
+const BASE_PROFILE = `${BASE}/profile`;
+export const PROFILE_API_VISIT: string = `${BASE_PROFILE}/visit`;
+export const PROFILE_API_RELATION_LIST: string = `${BASE_PROFILE}/relation/list`;
+export const PROFILE_API_RELATION_REQUEST: string = `${BASE_PROFILE}/relation/request`;

@@ -1,5 +1,5 @@
 import { ApiRequest } from "./ApiRequest";
-import { LOGIN_API_SIGNIN, LOGIN_API_SIGNUP } from "./ApiRoute";
+import { LOGIN_API_SIGNIN, LOGIN_API_SIGNUP, PROFILE_API_RELATION_LIST, PROFILE_API_VISIT } from "./ApiRoute";
 
 let regex = /^[a-zA-Z0-9]{6,15}/;
 
@@ -63,4 +63,16 @@ export const sendMessages = async (id: number, type: TypeMessage, content: any, 
   let result = await ApiRequest.build('POST', 'multipart/form-data')(CHAT_API_SEND_MESSAGE, formData);
   let r: ResponseInterface = result.data;
   return r.message;
+}
+
+export const getVisitProfile = async (id: number): Promise<ResponseInterface> => {
+  let result = await ApiRequest.build('GET')(PROFILE_API_VISIT, {user_id: id});
+  let r: ResponseInterface = result.data;
+  return r.message;
+}
+
+export const getListFriend = async () : Promise<ResponseInterface> => {
+  let result = await ApiRequest.build('GET')(PROFILE_API_RELATION_LIST);
+  let r: ResponseInterface = result.data;
+  return r.message
 }
