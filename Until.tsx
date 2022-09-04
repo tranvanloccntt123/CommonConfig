@@ -37,17 +37,21 @@ import { PaginateInterface, ResponseInterface, VisitProfile } from "./AppInterfa
 
 export type TypeMessage = 'image' | 'text' | 'video' | 'audio' | 'file';
 
-export const getList = async (): Promise<PaginateInterface> => {
+export const getList = async (): Promise<PaginateInterface | null> => {
   let result = await ApiRequest.build('GET')(CHAT_API_GET_LIST);
-  let r: PaginateInterface = result.data.message
-  return r;
+  let r: ResponseInterface = result.data;
+  if(r.status == RESPONSE_FAIL) return null;
+  let paginate: PaginateInterface = result.data.message
+  return paginate;
 }
 
-export const getMessages = async (id: number, left_id: string | number = 0): Promise<PaginateInterface> => {
+export const getMessages = async (id: number, left_id: string | number = 0): Promise<PaginateInterface | null> => {
   let result:any = null;
   result = left_id? await ApiRequest.build('GET')(CHAT_API_GET_MESSAGES, { id, left_id }) : await ApiRequest.build('GET')(CHAT_API_GET_MESSAGES, { id });
-  let r: PaginateInterface = result.data.message;
-  return r;
+  let r: ResponseInterface = result.data;
+  if(r.status == RESPONSE_FAIL) return null;
+  let paginate: PaginateInterface = result.data.message;
+  return paginate;
 }
 
 export const sendMessages = async (id: number, type: TypeMessage, content: any, name?: string, typeFile?: string): Promise<ResponseInterface> => {
@@ -65,14 +69,17 @@ export const sendMessages = async (id: number, type: TypeMessage, content: any, 
   return r.message;
 }
 
-export const getVisitProfile = async (id?: number): Promise<VisitProfile> => {
+export const getVisitProfile = async (id?: number): Promise<VisitProfile | null> => {
   let result = await ApiRequest.build('GET')(PROFILE_API_VISIT, id? {user_id: id} : {});
   let r: ResponseInterface = result.data;
+  if(r.status == RESPONSE_FAIL) return null;
   return r.message;
 }
 
-export const getListFriend = async () : Promise<PaginateInterface> => {
+export const getListFriend = async () : Promise<PaginateInterface | null> => {
   let result = await ApiRequest.build('GET')(PROFILE_API_RELATION_LIST);
   let r: ResponseInterface = result.data;
-  return r.message
+  if(r.status == RESPONSE_FAIL) return null;
+  let paginate: PaginateInterface = result.data.message;
+  return paginate;
 }
