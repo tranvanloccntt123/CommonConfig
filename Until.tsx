@@ -33,7 +33,7 @@ export const CheckAuthentication = (user: string, pass: string) : boolean => {
 // until for chat
 import { Platform } from "react-native";
 import { CHAT_API_GET_LIST, CHAT_API_GET_MESSAGES, CHAT_API_SEND_MESSAGE, STOREAGE } from "./ApiRoute"
-import { PaginateInterface, ResponseInterface } from "./AppInterface";
+import { PaginateInterface, ResponseInterface, VisitProfile } from "./AppInterface";
 
 export type TypeMessage = 'image' | 'text' | 'video' | 'audio' | 'file';
 
@@ -65,13 +65,13 @@ export const sendMessages = async (id: number, type: TypeMessage, content: any, 
   return r.message;
 }
 
-export const getVisitProfile = async (id: number): Promise<ResponseInterface> => {
+export const getVisitProfile = async (id: number): Promise<VisitProfile> => {
   let result = await ApiRequest.build('GET')(PROFILE_API_VISIT, {user_id: id});
   let r: ResponseInterface = result.data;
   return r.message;
 }
 
-export const getListFriend = async () : Promise<ResponseInterface> => {
+export const getListFriend = async () : Promise<PaginateInterface> => {
   let result = await ApiRequest.build('GET')(PROFILE_API_RELATION_LIST);
   let r: ResponseInterface = result.data;
   return r.message
