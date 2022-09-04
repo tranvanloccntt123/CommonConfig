@@ -22,7 +22,6 @@ export interface GroupMessageInterface extends baseApiResponseInterface{
     content: any
     user: UserInterface
 }
-
 export interface PaginateDetailInterface{
     total: number
     count: number
@@ -41,8 +40,6 @@ export interface PaginateInterface{
     pagination: PaginateDetailInterface
     links: PaginateLinkInterface
 }
-
-
 export interface ResponseInterface{
     message: any,
     status: string

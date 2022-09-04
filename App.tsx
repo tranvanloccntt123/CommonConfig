@@ -8,110 +8,136 @@
  * @format
  */
 
-import React, {type PropsWithChildren} from 'react';
-import {
-  SafeAreaView,
-  ScrollView,
-  StatusBar,
-  StyleSheet,
-  Text,
-  useColorScheme,
-  View,
-} from 'react-native';
-
-import {
-  Colors,
-  DebugInstructions,
-  Header,
-  LearnMoreLinks,
-  ReloadInstructions,
-} from 'react-native/Libraries/NewAppScreen';
-
-const Section: React.FC<
-  PropsWithChildren<{
-    title: string;
-  }>
-> = ({children, title}) => {
-  const isDarkMode = useColorScheme() === 'dark';
+import React from 'react';
+import { SafeAreaView, ScrollView, Text, TextInput, TouchableOpacity, View, StyleSheet } from 'react-native';
+import { ApiRequest, ContentType } from './ApiRequest';
+import { AppStyle } from './AppStyle';
+import { gray, orange, red, violet, white } from './Colors';
+import { Method } from 'axios';
+import ListAPI from './src/components/ListAPI';
+import ListMethod from './src/components/ListMethod';
+import ListEncType from './src/components/ListEncType';
+const style = StyleSheet.create({
+  input: {
+    borderWidth: 1, borderColor: gray, backgroundColor: white
+  }
+});
+interface Agruments {
+  title: string,
+  value: string
+}
+const App = () => {
+  //token = H3FizGTaUakQUQjlFAtki41lOjHOURTyXATmxsXV
+  const [token, setToken] = React.useState<string>("");
+  const [route, setRoute] = React.useState<string>("");
+  const [agruments, setAgruments] = React.useState<Array<Agruments>>([]);
+  const [enctype, setEncType] = React.useState<ContentType>("text/html");
+  const [selectMethod, setSelectMethod] = React.useState<Method>('GET');
+  const [response, setResponse] = React.useState<string>('');
+  const onAddAgrument = () => {
+    const agrument: Agruments = {
+      title: "agrument name",
+      value: ""
+    }
+    setAgruments((args: Array<Agruments>) => {
+      let t = [...args];
+      t.push(agrument);
+      return t;
+    });
+  }
+  const onRequest = async () => {
+    ApiRequest.token = token;
+    setResponse('Sending request...')
+    let body = {};
+    agruments.forEach(v => {
+      body[`${v.title.toLowerCase()}`] = v.value;
+    });
+    let r = await ApiRequest.build(selectMethod, enctype)(route, body);
+    setResponse(JSON.stringify(r.data))
+  }
   return (
-    <View style={styles.sectionContainer}>
-      <Text
-        style={[
-          styles.sectionTitle,
-          {
-            color: isDarkMode ? Colors.white : Colors.black,
-          },
-        ]}>
-        {title}
-      </Text>
-      <Text
-        style={[
-          styles.sectionDescription,
-          {
-            color: isDarkMode ? Colors.light : Colors.dark,
-          },
-        ]}>
-        {children}
-      </Text>
+    <View style={[AppStyle.container]}>
+      <SafeAreaView style={[AppStyle.container]}>
+        <ScrollView style={[AppStyle.p3]}>
+          <Text style={[AppStyle.h4, AppStyle.mb3]}>TEST API version 0.0.3</Text>
+          <View style={[AppStyle.mb3]}>
+            <Text style={[AppStyle.pl3, AppStyle.mb1]}>Path *</Text>
+            <TextInput
+              style={[AppStyle.p3, AppStyle.mb1, { borderWidth: 1, borderColor: gray, borderRadius: 5 }]}
+              placeholder={"example: https://localhost/api/auth/login"}
+              value={route}
+              onChangeText={(text) => setRoute(text)}
+            />
+          </View>
+          <ListAPI setRoute={setRoute} />
+          <ListMethod selectMethod={selectMethod} setSelectMethod={setSelectMethod} />
+          <ListEncType selectType={enctype} setSelectType={setEncType} />
+          <View style={[AppStyle.mb3]}>
+            <Text style={[AppStyle.pl3, AppStyle.mb1]}>Authorization</Text>
+            <TextInput
+              style={[AppStyle.p3, { borderWidth: 1, borderColor: gray, borderRadius: 5 }]}
+              placeholder={"Bearer xxx"}
+              value={token}
+              onChangeText={(text) => setToken(text)}
+            />
+          </View>
+          <View style={[AppStyle.mb3]}>
+            <Text style={[AppStyle.pl3, AppStyle.mb1]}>Body Request</Text>
+            {
+              agruments.map((value, index) => <View style={[{ flex: 1, flexDirection: 'row' }, AppStyle.mb3]} key={`[AGRUMMENTS] ${index}`}>
+                <TextInput
+                  value={value.title}
+                  onChangeText={(text) => {
+                    setAgruments((agrs: Array<Agruments>) => {
+                      let t = [...agrs];
+                      t[index].title = text;
+                      return t;
+                    });
+                  }}
+                  style={[AppStyle.p3, style.input, { flex: 1, borderTopLeftRadius: 5, borderBottomLeftRadius: 5 }]}
+                />
+                <TextInput
+                  value={value.value}
+                  style={[AppStyle.p3, style.input, { flex: 2, borderTopRightRadius: 5, borderBottomRightRadius: 5 }]}
+                  onChangeText={(text) => {
+                    setAgruments((agrs: Array<Agruments>) => {
+                      let t = [...agrs];
+                      t[index].value = text;
+                      return t;
+                    });
+                  }}
+                />
+                <TouchableOpacity activeOpacity={0.9} onPress={() => {
+                  setAgruments((agrs: Array<Agruments>) => {
+                    let t = [...agrs];
+                    t.splice(index, 1);
+                    return t;
+                  });
+                }} style={[{backgroundColor: red, borderRadius: 15}, AppStyle.p3, AppStyle.center, AppStyle.ml1]}>
+                  <Text style={[{color: white, fontWeight: 'bold'}]}>Del</Text>
+                </TouchableOpacity>
+              </View>)
+            }
+            <TouchableOpacity onPress={onAddAgrument} activeOpacity={0.8} style={[{ borderWidth: 1, borderRadius: 8, borderColor: gray }, AppStyle.p3, AppStyle.center]}>
+              <Text style={[AppStyle.p]}>Add Agruments +</Text>
+            </TouchableOpacity>
+          </View>
+
+          <View style={[AppStyle.mb3]}>
+            <Text>Response</Text>
+            <TextInput 
+              value={response}
+              textAlign='left'
+              style={{width: '100%', height: 300, borderWidth: 1, borderColor: gray, borderRadius: 5, backgroundColor: white, padding: 3}}
+              multiline
+            />
+          </View>
+          <TouchableOpacity onPress={onRequest} activeOpacity={0.8} style={[AppStyle.p3, AppStyle.mb3, AppStyle.center, { backgroundColor: orange, borderRadius: 15 }]}>
+            <Text style={[AppStyle.h5, { color: white }]}>SEND</Text>
+          </TouchableOpacity>
+        </ScrollView>
+      </SafeAreaView>
     </View>
   );
 };
-
-const App = () => {
-  const isDarkMode = useColorScheme() === 'dark';
-
-  const backgroundStyle = {
-    backgroundColor: isDarkMode ? Colors.darker : Colors.lighter,
-  };
-
-  return (
-    <SafeAreaView style={backgroundStyle}>
-      <StatusBar barStyle={isDarkMode ? 'light-content' : 'dark-content'} />
-      <ScrollView
-        contentInsetAdjustmentBehavior="automatic"
-        style={backgroundStyle}>
-        <Header />
-        <View
-          style={{
-            backgroundColor: isDarkMode ? Colors.black : Colors.white,
-          }}>
-          <Section title="Step One">
-            Edit <Text style={styles.highlight}>App.tsx</Text> to change this
-            screen and then come back to see your edits.
-          </Section>
-          <Section title="See Your Changes">
-            <ReloadInstructions />
-          </Section>
-          <Section title="Debug">
-            <DebugInstructions />
-          </Section>
-          <Section title="Learn More">
-            Read the docs to discover what to do next:
-          </Section>
-          <LearnMoreLinks />
-        </View>
-      </ScrollView>
-    </SafeAreaView>
-  );
-};
-
-const styles = StyleSheet.create({
-  sectionContainer: {
-    marginTop: 32,
-    paddingHorizontal: 24,
-  },
-  sectionTitle: {
-    fontSize: 24,
-    fontWeight: '600',
-  },
-  sectionDescription: {
-    marginTop: 8,
-    fontSize: 18,
-    fontWeight: '400',
-  },
-  highlight: {
-    fontWeight: '700',
-  },
-});
-
 export default App;
