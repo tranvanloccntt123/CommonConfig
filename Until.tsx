@@ -65,8 +65,8 @@ export const sendMessages = async (id: number, type: TypeMessage, content: any, 
   return r.message;
 }
 
-export const getVisitProfile = async (id: number): Promise<VisitProfile> => {
-  let result = await ApiRequest.build('GET')(PROFILE_API_VISIT, {user_id: id});
+export const getVisitProfile = async (id?: number): Promise<VisitProfile> => {
+  let result = await ApiRequest.build('GET')(PROFILE_API_VISIT, id? {user_id: id} : {});
   let r: ResponseInterface = result.data;
   return r.message;
 }
