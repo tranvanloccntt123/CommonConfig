@@ -26,9 +26,9 @@ export interface GroupMessageInterface extends BaseApiResponseInterface{
 }
 export interface ProfileInterface extends BaseApiResponseInterface{
     name: string,
-    email: string,
-    avatar: string | ImageSourcePropType,
-    background: string | ImageSourcePropType
+    email?: string,
+    avatar?: string | ImageSourcePropType,
+    background?: string | ImageSourcePropType
 }
 export interface VisitProfile{
     posts: number,
