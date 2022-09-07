@@ -1,5 +1,5 @@
 import { ApiRequest } from "./ApiRequest";
-import { LOGIN_API_SIGNIN, LOGIN_API_SIGNUP, PROFILE_API_RELATION_LIST, PROFILE_API_VISIT } from "./ApiRoute";
+import { LOGIN_API_SIGNIN, LOGIN_API_SIGNUP, POST_API_CREATE, POST_API_DELETE, POST_API_LIST, PROFILE_API_RELATION_LIST, PROFILE_API_VISIT } from "./ApiRoute";
 
 let regex = /^[a-zA-Z0-9]{6,15}/;
 
@@ -89,4 +89,35 @@ export const getListFriend = async () : Promise<PaginateInterface | null> => {
   if(r.status.toLowerCase() == RESPONSE_FAIL) return null;
   let paginate: PaginateInterface = result.data.message;
   return paginate;
+}
+
+// api for post
+export const sendPost = async (content: string, name?: string, type?: string, media?: any): Promise<string | null> => {
+  let formData = new FormData();
+  formData.append('content', content);
+  if(media && name && type){
+    formData.append('media', {
+      name: name,
+      type: type,
+      uri: Platform.OS === 'android' ? media : media.replace('file://', ''),
+    })
+  }
+  let result = await ApiRequest.build('POST', 'multipart/form-data')(POST_API_CREATE, {content: content});
+  if(result.data.status.toLowerCase() == RESPONSE_FAIL) return null;
+  return result.data.message.UUID;
+}
+
+export const getListPost = async (): Promise<PaginateInterface | null> => {
+  let result = await ApiRequest.build('GET', 'application/json')(POST_API_LIST);
+  let r: ResponseInterface = result.data;
+  if(r.status.toLowerCase() == RESPONSE_FAIL)
+    return null;
+  return r.message;
+}
+
+export const deletePost = async (uuid: string): Promise<boolean> => {
+  let result = await ApiRequest.build('POST', 'application/json')(POST_API_DELETE, {uuid});
+  let r: ResponseInterface = result.data;
+  if(r.status.toLowerCase() == RESPONSE_FAIL) return false;
+  return true;
 }

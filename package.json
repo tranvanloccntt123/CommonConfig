@@ -40,6 +40,9 @@
       "jsx",
       "json",
       "node"
+    ],
+    "setupFilesAfterEnv": [
+      "<rootDir>/setupTest.js"
     ]
   },
   "publishConfig": {

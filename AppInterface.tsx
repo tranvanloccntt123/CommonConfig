@@ -11,7 +11,8 @@ export interface GroupChatInterface extends BaseApiResponseInterface{
 }
 export interface UserInterface extends BaseApiResponseInterface{
     name: string,
-    avatar?: string
+    avatar?: string,
+    background?: ImageSourcePropType
 }
 export interface GroupChatUserInterface extends BaseApiResponseInterface{
     user: UserInterface
@@ -30,6 +31,13 @@ export interface ProfileInterface extends BaseApiResponseInterface{
     avatar?: string | ImageSourcePropType,
     background?: string | ImageSourcePropType
 }
+export interface PostInterface extends BaseApiResponseInterface{
+    content: string,
+    image?: string,
+    video?: string,
+    user: UserInterface
+}
+
 export interface VisitProfile{
     posts: number,
     friends: number,

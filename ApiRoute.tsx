@@ -1,4 +1,4 @@
-const BASE = "https://tei-source.com/api/v1";
+const BASE =__DEV__? "http://localhost/teisever/api/v1" : "https://tei-source.com/api/v1";
 export const STOREAGE = "https://tei-source.com/storage/app";
 //api for authentication
 const BASE_AUTH = `${BASE}/auth`;
@@ -14,3 +14,8 @@ const BASE_PROFILE = `${BASE}/profile`;
 export const PROFILE_API_VISIT: string = `${BASE_PROFILE}/visit`;
 export const PROFILE_API_RELATION_LIST: string = `${BASE_PROFILE}/relation/list`;
 export const PROFILE_API_RELATION_REQUEST: string = `${BASE_PROFILE}/relation/request`;
+//api for post
+const BASE_POST = `${BASE}/post`;
+export const POST_API_CREATE: string = `${BASE_POST}/create`;
+export const POST_API_LIST: string = `${BASE_POST}/list`;
+export const POST_API_DELETE: string = `${BASE_POST}/delete`;
