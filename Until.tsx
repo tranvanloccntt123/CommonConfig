@@ -41,7 +41,7 @@ export type TypeMessage = 'image' | 'text' | 'video' | 'audio' | 'file';
 export const getListChat = async (): Promise<PaginateInterface | null> => {
   let result = await ApiRequest.build('GET')(CHAT_API_GET_LIST);
   let r: ResponseInterface = result.data;
-  if(r.status.toLowerCase() == RESPONSE_FAIL) return null;
+  if(!r || r.status.toLowerCase() == RESPONSE_FAIL) return null;
   let paginate: PaginateInterface = result.data.message
   return paginate;
 }
@@ -50,7 +50,7 @@ export const getMessages = async (id: number, left_id: string | number = 0): Pro
   let result:any = null;
   result = left_id? await ApiRequest.build('GET')(CHAT_API_GET_MESSAGES, { id, left_id }) : await ApiRequest.build('GET')(CHAT_API_GET_MESSAGES, { id });
   let r: ResponseInterface = result.data;
-  if(r.status.toLowerCase() == RESPONSE_FAIL) return null;
+  if(!r || r.status.toLowerCase() == RESPONSE_FAIL) return null;
   let paginate: PaginateInterface = result.data.message;
   return paginate;
 }
@@ -78,15 +78,18 @@ export const getVisitProfile = async (id?: number): Promise<VisitProfile | null>
   } 
   let result = await ApiRequest.build('GET')(PROFILE_API_VISIT, id? {user_id: id} : {});
   let r: ResponseInterface = result.data;
-  if(r.status.toLowerCase() == RESPONSE_FAIL) return null;
+  if(!r || r.status.toLowerCase() == RESPONSE_FAIL) return null;
   setCacheUser(id? id : 0, r.message);
   return r.message;
 }
 
-export const getListFriend = async () : Promise<PaginateInterface | null> => {
-  let result = await ApiRequest.build('GET')(PROFILE_API_RELATION_LIST);
+export const getListFriend = async (left_id?: number, page?: number) : Promise<PaginateInterface | null> => {
+  let data:any = {};
+  if(left_id) data.left_id = left_id;
+  if(page) data.page = page;
+  let result = await ApiRequest.build('GET')(PROFILE_API_RELATION_LIST, data);
   let r: ResponseInterface = result.data;
-  if(r.status.toLowerCase() == RESPONSE_FAIL) return null;
+  if(!r || r.status.toLowerCase() == RESPONSE_FAIL) return null;
   let paginate: PaginateInterface = result.data.message;
   return paginate;
 }
@@ -101,16 +104,19 @@ export const sendPost = async (content: string, name?: string, type?: string, me
       type: type,
       uri: Platform.OS === 'android' ? media : media.replace('file://', ''),
     })
-  }
+  } 
   let result = await ApiRequest.build('POST', 'multipart/form-data')(POST_API_CREATE, {content: content});
   if(result.data.status.toLowerCase() == RESPONSE_FAIL) return null;
   return result.data.message.UUID;
 }
 
-export const getListPost = async (): Promise<PaginateInterface | null> => {
-  let result = await ApiRequest.build('GET', 'application/json')(POST_API_LIST);
+export const getListPost = async (left_id?: number, page?: number): Promise<PaginateInterface | null> => {
+  let data:any = {};
+  if(left_id) data.left_id = left_id;
+  if(page) data.page = page;
+  let result = await ApiRequest.build('GET', 'application/json')(POST_API_LIST, data);
   let r: ResponseInterface = result.data;
-  if(r.status.toLowerCase() == RESPONSE_FAIL)
+  if(!r || r.status.toLowerCase() == RESPONSE_FAIL)
     return null;
   return r.message;
 }
@@ -118,6 +124,6 @@ export const getListPost = async (): Promise<PaginateInterface | null> => {
 export const deletePost = async (uuid: string): Promise<boolean> => {
   let result = await ApiRequest.build('POST', 'application/json')(POST_API_DELETE, {uuid});
   let r: ResponseInterface = result.data;
-  if(r.status.toLowerCase() == RESPONSE_FAIL) return false;
+  if(!r || r.status.toLowerCase() == RESPONSE_FAIL) return false;
   return true;
 }

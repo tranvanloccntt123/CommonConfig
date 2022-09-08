@@ -1,4 +1,4 @@
-const BASE =__DEV__? "http://localhost/teisever/api/v1" : "https://tei-source.com/api/v1";
+const BASE = "https://tei-source.com/api/v1";
 export const STOREAGE = "https://tei-source.com/storage/app";
 //api for authentication
 const BASE_AUTH = `${BASE}/auth`;
