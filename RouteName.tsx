@@ -14,3 +14,6 @@ export const POST_CREATE_SCREEN = "[POST SCREEN] POST CREATE";
 //title for route name
 export const PROFILE_INFO_TITLE = "Profile";
 export const PROFILE_MODAL_TITLE = "";
+export const POST_CREATE_TITLE = "Create Post";
+export const CHAT_LIST_TITLE = "";
+export const CHAT_DETAIL_TITLE = "";
