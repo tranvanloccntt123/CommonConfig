@@ -96,16 +96,18 @@ export const getListFriend = async (left_id?: number, page?: number) : Promise<P
 
 // api for post
 export const sendPost = async (content: string, name?: string, type?: string, media?: any): Promise<string | null> => {
-  let formData = new FormData();
-  formData.append('content', content);
+  let result;
   if(media && name && type){
+    let formData = new FormData();
+    formData.append('content', content);
     formData.append('media', {
       name: name,
       type: type,
       uri: Platform.OS === 'android' ? media : media.replace('file://', ''),
     })
+    result = await ApiRequest.build('POST', 'multipart/form-data')(POST_API_CREATE, formData);
   } 
-  let result = await ApiRequest.build('POST', 'multipart/form-data')(POST_API_CREATE, formData);
+  else result = await ApiRequest.build('POST', 'multipart/form-data')(POST_API_CREATE, {content});
   if(result.data.status.toLowerCase() == RESPONSE_FAIL) return null;
   return result.data.message.UUID;
 }

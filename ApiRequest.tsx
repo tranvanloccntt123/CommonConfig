@@ -15,17 +15,44 @@ export class ApiRequest{
         };
         let config = {
             headers,
-            method
         };
-        return function(url: string, data?: object){
-            if(method == 'GET') params = {...params, ...data};
+        return function(url: string, data?: any){
+            if(method == 'GET'){
+                let newParams = {...params, ...data};
+                let axiosConfig: AxiosRequestConfig = {
+                    ...config,
+                    params: newParams,
+                };
+                return axios.get(url, axiosConfig).then(result => result).catch(e => e.response);
+            }
+
             let axiosConfig: AxiosRequestConfig = {
                 ...config,
-                params,
-                data: method == 'GET'? null : data,
-                url
+                params: params
             };
-            return axios(axiosConfig).then(result => result).catch(e => e.response);
+            return axios.post(url, data? data : undefined, axiosConfig).then(result => {
+                return result;
+            }).catch(error => {
+                if (error.response) {
+                    console.log('ERROR RESPONSE');
+                    // The request was made and the server responded with a status code
+                    // that falls out of the range of 2xx
+                    console.log(error.response.data);
+                    console.log(error.response.status);
+                    console.log(error.response.headers);
+                  } else if (error.request) {
+                    console.log('ERROR REQUEST');
+                    // The request was made but no response was received
+                    // `error.request` is an instance of XMLHttpRequest in the browser and an instance of
+                    // http.ClientRequest in node.js
+                    console.log(error.request);
+                  } else {
+                    // Something happened in setting up the request that triggered an Error
+                    console.log('Error', error.message);
+                  }
+                  console.log(error.config);
+                return error.response;
+            });
         }
     }
 }
