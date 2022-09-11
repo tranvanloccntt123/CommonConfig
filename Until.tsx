@@ -105,7 +105,7 @@ export const sendPost = async (content: string, name?: string, type?: string, me
       uri: Platform.OS === 'android' ? media : media.replace('file://', ''),
     })
   } 
-  let result = await ApiRequest.build('POST', 'multipart/form-data')(POST_API_CREATE, {content: content});
+  let result = await ApiRequest.build('POST', 'multipart/form-data')(POST_API_CREATE, formData);
   if(result.data.status.toLowerCase() == RESPONSE_FAIL) return null;
   return result.data.message.UUID;
 }
