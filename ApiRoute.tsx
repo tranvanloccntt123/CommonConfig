@@ -1,4 +1,10 @@
-const BASE = "https://tei-source.com/api/v1";
+let __TEST__ = false;
+let TEST_ROUTE = "https://tei-source.com/api/v1";
+export const setLocalRoute = (route: string) => {
+    __TEST__ = true;
+    TEST_ROUTE = route;
+}
+const BASE = __TEST__? TEST_ROUTE : "https://tei-source.com/api/v1";
 export const STOREAGE = "https://tei-source.com/storage/app";
 //api for authentication
 const BASE_AUTH = `${BASE}/auth`;
