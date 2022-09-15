@@ -1,6 +1,6 @@
 {
   "name": "@teiresource/commonconfig",
-  "version": "0.1.6",
+  "version": "0.1.7",
   "private": false,
   "scripts": {
     "android": "react-native run-android",
