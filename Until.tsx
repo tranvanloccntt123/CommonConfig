@@ -1,5 +1,5 @@
 import { ApiRequest } from "./ApiRequest";
-import { LOGIN_API_SIGNIN, LOGIN_API_SIGNUP, POST_API_CREATE, POST_API_DELETE, POST_API_LIST, PROFILE_API_RELATION_LIST, PROFILE_API_VISIT } from "./ApiRoute";
+import { LOGIN_API_SIGNIN, LOGIN_API_SIGNUP, POST_API_CREATE, POST_API_DELETE, POST_API_LIST, POST_API_UPDATE, PROFILE_API_RELATION_LIST, PROFILE_API_VISIT } from "./ApiRoute";
 
 let regex = /^[a-zA-Z0-9]{6,15}/;
 
@@ -112,10 +112,20 @@ export const sendPost = async (content: string, name?: string, type?: string, me
   return result.data.message.UUID;
 }
 
-export const getListPost = async (left_id?: number, page?: number): Promise<PaginateInterface | null> => {
+export const updatePost = async (UUID: string, content: string) : Promise<boolean> => {
+  if(!content) return false;
+  let result = await ApiRequest.build('POST', 'application/json')(POST_API_UPDATE, { 'uuid': UUID, content});
+  let r: ResponseInterface = result.data;
+  if(!r || r.status.toLowerCase() == RESPONSE_FAIL)
+    return false;
+  return true;
+}
+
+export const getListPost = async (left_id?: number, page?: number, user_id?: number): Promise<PaginateInterface | null> => {
   let data:any = {};
   if(left_id) data.left_id = left_id;
   if(page) data.page = page;
+  if(user_id) data.user_id = user_id;
   let result = await ApiRequest.build('GET', 'application/json')(POST_API_LIST, data);
   let r: ResponseInterface = result.data;
   if(!r || r.status.toLowerCase() == RESPONSE_FAIL)

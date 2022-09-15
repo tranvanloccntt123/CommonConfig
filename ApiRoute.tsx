@@ -25,3 +25,4 @@ const BASE_POST = `${BASE}/post`;
 export const POST_API_CREATE: string = `${BASE_POST}/create`;
 export const POST_API_LIST: string = `${BASE_POST}/list`;
 export const POST_API_DELETE: string = `${BASE_POST}/delete`;
+export const POST_API_UPDATE: string = `${BASE_POST}/update`;

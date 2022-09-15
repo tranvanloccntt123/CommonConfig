@@ -8,8 +8,8 @@ import App from '../App';
 // Note: test renderer must be required after react-native.
 import renderer from 'react-test-renderer';
 import { ApiRequest } from '../ApiRequest';
-import { getListFriend, getListPost, getVisitProfile, sendPost, deletePost, getListChat } from '../Until';
-import { PaginateInterface, ProfileInterface, VisitProfile } from '../AppInterface';
+import { getListFriend, getListPost, getVisitProfile, sendPost, deletePost, getListChat, updatePost } from '../Until';
+import { PaginateInterface, VisitProfile } from '../AppInterface';
 import axios from 'axios';
 import { getCacheUser } from '../LocalCache';
 jest.spyOn(axios, 'post');
@@ -63,14 +63,28 @@ describe('TEST API', () => {
     //check get list post
     let rList: PaginateInterface | null = await getListPost();
     expect(rList).not.toBeNull();
-    //check delete post
-    let r1: boolean = await deletePost(r);
-    expect(r1).toBe(true);
     //check post is create success
     let count = 0;
     rList?.data.forEach(value => {
       if(value['UUID'] == r) count++;
     })
     expect(count).not.toBe(0);
+    //check update post
+    let contentUpdate = `update content ${r}`;
+    let rUpdate: boolean = await updatePost(r, contentUpdate);
+    expect(rUpdate).toBe(true);
+    //check update post success
+    rList = await getListPost();
+    count = 0;
+    rList?.data.forEach(value => {
+      if(value['UUID'] == r && value['content'] == contentUpdate) count++;
+    });
+    expect(count).not.toBe(0);
+    //check get list post of other user
+    let rOtherList: PaginateInterface | null = await getListPost(0, 1, 5);
+    expect(rOtherList).not.toBeNull();
+    //check delete post
+    let r1: boolean = await deletePost(r);
+    expect(r1).toBe(true);
   });
 });
