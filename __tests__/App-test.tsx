@@ -8,7 +8,7 @@ import App from '../App';
 // Note: test renderer must be required after react-native.
 import renderer from 'react-test-renderer';
 import { ApiRequest } from '../ApiRequest';
-import { getListFriend, getListPost, getVisitProfile, sendPost, deletePost, getListChat, updatePost } from '../Until';
+import { getListFriend, getListPost, getVisitProfile, sendPost, deletePost, getListChat, updatePost, checkUUIDRegex } from '../Until';
 import { PaginateInterface, VisitProfile } from '../AppInterface';
 import axios from 'axios';
 import { getCacheUser } from '../LocalCache';
@@ -59,7 +59,7 @@ describe('TEST API', () => {
       Ex affert doming duo, postea ponderum gubergren mei at, altera labores at ius. Quo et tacimates mediocrem suavitate.`);
     expect(r).not.toBeNull();
     if (!r) return
-    expect((/^[0-9A-F]{8}-[0-9A-F]{4}-[4][0-9A-F]{3}-[89AB][0-9A-F]{3}-[0-9A-F]{12}$/i).test(r)).toBe(true);
+    expect(checkUUIDRegex(r)).toBe(true);
     //check get list post
     let rList: PaginateInterface | null = await getListPost();
     expect(rList).not.toBeNull();
@@ -80,6 +80,15 @@ describe('TEST API', () => {
       if(value['UUID'] == r && value['content'] == contentUpdate) count++;
     });
     expect(count).not.toBe(0);
+    //check update with content null
+    rUpdate = await updatePost(r, null);
+    expect(rUpdate).toBe(false);
+    //check update with content empty
+    rUpdate = await updatePost(r, "");
+    expect(rUpdate).toBe(false);
+    //check update with uuid is empty
+    rUpdate = await updatePost("", "");
+    expect(rUpdate).toBe(false);
     //check get list post of other user
     let rOtherList: PaginateInterface | null = await getListPost(0, 1, 5);
     expect(rOtherList).not.toBeNull();

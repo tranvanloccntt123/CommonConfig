@@ -112,9 +112,10 @@ export const sendPost = async (content: string, name?: string, type?: string, me
   return result.data.message.UUID;
 }
 
-export const updatePost = async (UUID: string, content: string) : Promise<boolean> => {
+export const updatePost = async (uuid: string, content: string) : Promise<boolean> => {
   if(!content) return false;
-  let result = await ApiRequest.build('POST', 'application/json')(POST_API_UPDATE, { 'uuid': UUID, content});
+  if(!checkUUIDRegex(uuid)) return false;
+  let result = await ApiRequest.build('POST', 'application/json')(POST_API_UPDATE, { 'uuid': uuid, content});
   let r: ResponseInterface = result.data;
   if(!r || r.status.toLowerCase() == RESPONSE_FAIL)
     return false;
@@ -134,8 +135,13 @@ export const getListPost = async (left_id?: number, page?: number, user_id?: num
 }
 
 export const deletePost = async (uuid: string): Promise<boolean> => {
+  if(!checkUUIDRegex(uuid)) return false;
   let result = await ApiRequest.build('POST', 'application/json')(POST_API_DELETE, {uuid});
   let r: ResponseInterface = result.data;
   if(!r || r.status.toLowerCase() == RESPONSE_FAIL) return false;
   return true;
+}
+
+export const checkUUIDRegex = (r: string) => {
+  return (/^[0-9A-F]{8}-[0-9A-F]{4}-[4][0-9A-F]{3}-[89AB][0-9A-F]{3}-[0-9A-F]{12}$/i).test(r);
 }
