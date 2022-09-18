@@ -42,7 +42,8 @@ export interface VisitProfile{
     posts: number,
     friends: number,
     profile: ProfileInterface,
-    relation_ship: number
+    relation_ship: number,
+    who_request: number
 }
 export interface PaginateDetailInterface{
     total: number
