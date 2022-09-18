@@ -8,10 +8,11 @@ import App from '../App';
 // Note: test renderer must be required after react-native.
 import renderer from 'react-test-renderer';
 import { ApiRequest } from '../ApiRequest';
-import { getListFriend, getListPost, getVisitProfile, sendPost, deletePost, getListChat, updatePost, checkUUIDRegex } from '../Until';
+import { getListFriend, getListPost, getVisitProfile, sendPost, deletePost, getListChat, updatePost, checkUUIDRegex, sendRelationShip } from '../Until';
 import { PaginateInterface, VisitProfile } from '../AppInterface';
 import axios from 'axios';
 import { getCacheUser } from '../LocalCache';
+import { RelationShipEnum } from '../AppEnum';
 jest.spyOn(axios, 'post');
 jest.spyOn(axios, 'get');
 jest.setTimeout(30000);
@@ -95,5 +96,14 @@ describe('TEST API', () => {
     //check delete post
     let r1: boolean = await deletePost(r);
     expect(r1).toBe(true);
+  });
+
+  test("relation", async () => {
+    let r: boolean | null = await sendRelationShip(5, RelationShipEnum.request);
+    expect(r).toBe(true);
+    r = await sendRelationShip(-1, RelationShipEnum.confirm);
+    expect(r).toBe(false);
+    r = await sendRelationShip(5, RelationShipEnum.confirm);
+    expect(r).toBe(true);
   });
 });

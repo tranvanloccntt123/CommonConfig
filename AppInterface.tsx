@@ -41,7 +41,8 @@ export interface PostInterface extends BaseApiResponseInterface{
 export interface VisitProfile{
     posts: number,
     friends: number,
-    profile: ProfileInterface
+    profile: ProfileInterface,
+    relation_ship: number
 }
 export interface PaginateDetailInterface{
     total: number

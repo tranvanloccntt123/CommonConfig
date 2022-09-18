@@ -20,3 +20,5 @@ export const POST_API_CREATE: string = `${BASE_POST}/create`;
 export const POST_API_LIST: string = `${BASE_POST}/list`;
 export const POST_API_DELETE: string = `${BASE_POST}/delete`;
 export const POST_API_UPDATE: string = `${BASE_POST}/update`;
+//api for relationship
+export const RELATION_API_REQUEST: string = `${BASE_PROFILE}/relation/request`;
